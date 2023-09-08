@@ -602,3 +602,80 @@ void ADC_Init() {
 
 
 ```
+### Temperature monitoring through serial port
+
+```C
+ #include <xc.h>
+#include <stdio.h>
+#pragma config OSC=HS
+#pragma config WDT=OFF
+#pragma config PWRT=OFF
+#pragma config BOREN=OFF
+#pragma config LVP=OFF
+#pragma config CPD=OFF
+
+#define _XTAL_FREQ 20000000
+
+
+ void UART_Init();
+ void UART_Write(char);
+ void Send_String(char *s);
+ void ADC_Init(); 
+
+void main() 
+{
+    
+    char buffer[15];
+    int ADC_Value=0;
+    float Voltage=0;
+    // Initialize UART
+    UART_Init();
+    ADC_Init(); //Init ADC
+    
+    while(1) 
+    {
+             
+        GO_nDONE = 1;     // Start ADC conversion
+        while (GO_nDONE); // Wait for conversion to complete
+        ADC_Value=(ADRESH << 8) + ADRESL; // Return the 10-bit ADC result
+      
+        Voltage =  (ADC_Value*5.0)/1024; // Convert to voltage
+        sprintf(buffer," Temperature = %0.2f",Voltage*100); // Convert to temperature
+        Send_String(buffer);
+        UART_Write(13); // New line
+         __delay_ms(1000); //delay
+    }
+}
+ // Function to initialize UART
+void UART_Init() 
+{
+    // Set the baud rate to 9600 (configurations for 20MHz crystal)
+    TRISC = 0X80;
+    SPBRG =0X81;
+    TXSTA = 0X24;
+    RCSTA = 0X90;
+
+}
+
+// Function to send a character over UART
+void UART_Write(char data)
+{
+    while(!TXIF);           // Wait until the transmitter is ready
+    TXREG = data;           // Transmit data
+}
+void Send_String(char *s)
+{
+    while (*s++)
+    {
+      UART_Write(*s);
+    }
+}
+void ADC_Init() {
+    ADCON1 = 0x80; // Set AN0/RA0 as analog input, Vref- and Vref+ as VSS and VDD
+    ADCON2 = 0x8C; // Right justify result, Tad = Fosc/16
+    ADCON0 = 0x01; // ADC module enabled, channel AN0 selected
+}
+
+
+
+```
