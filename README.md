@@ -398,3 +398,58 @@ void LCD_String(const char* data) // Send string
 }
 
 ```
+### LCD Interfacing 4 bit mode
+```C
+ #include <xc.h>
+
+#pragma config OSC=HS
+#pragma config WDT=OFF
+#pragma config PWRT=OFF
+#pragma config BOREN=OFF
+#pragma config LVP=OFF
+#pragma config CPD=OFF
+
+#define _XTAL_FREQ 20000000
+
+  
+ void UART_Init();
+ void UART_Write(char);
+
+void main() 
+{
+    
+    
+    // Initialize UART
+    UART_Init();
+    
+    while(1) {
+        // Send a character
+        UART_Write('H');
+        UART_Write('e');
+        UART_Write('l');
+        UART_Write('l');
+        UART_Write('o');
+        UART_Write(13); // New line
+      
+         __delay_ms(1000); //delay
+    }
+}
+ // Function to initialize UART
+void UART_Init() 
+{
+    // Set the baud rate to 9600 (configurations for 20MHz crystal)
+    TRISC = 0X80;
+    SPBRG =0X81;
+    TXSTA = 0X24;
+    RCSTA = 0X90;
+
+}
+
+// Function to send a character over UART
+void UART_Write(char data)
+{
+    while(!TXIF);           // Wait until the transmitter is ready
+    TXREG = data;           // Transmit data
+}
+
+```
