@@ -204,7 +204,7 @@ void main()
    while (1) 
     {
        
-           if (PORTCbits.RC0==0) 
+           if (PORTCbits.RC0==0) // if button pressed
            {
             __delay_ms(100); // Debounce delay
               while (PORTCbits.RC0==0); // Wait for button release
@@ -228,7 +228,7 @@ void main()
 ### Seven segment up and down counter (two switches)
 ```C
 
-#include <xc.h>
+ #include <xc.h>
 
 #pragma config OSC=HS
 #pragma config WDT=OFF
@@ -241,12 +241,7 @@ void main()
 
  
  // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
- // switch1 connected to RC0
- //  switch2 connected to RC1
-void main()
-{
-     
-    const  unsigned char SevenDigits[10] =
+  unsigned char SelectDigits[10] =
     {
         0b00111111, // 0
         0b00000110, // 1
@@ -259,12 +254,19 @@ void main()
         0b01111111, // 8
         0b01101111  // 9
     };
-    TRISB = 0; // RB7 is input for the button, others are outputs
+
+void main()
+{
+     
+   
+    TRISB = 0; // PORTB output
+   
     TRISCbits.RC0=1;  // Switch up input
-     TRISCbits.RC1=1; // Switch down input
+    TRISCbits.RC1=1; // Switch down input
+    
     char count = 0;
     
-    while (1) 
+   while (1) 
     {
        
            if (PORTCbits.RC0==0) // if button1 is pressed
@@ -294,13 +296,12 @@ void main()
             
            }
        
-            LATB = SevenDigits[count];
-           
+       
+           LATB = SelectDigits[count];
     }
- 
- 
- 
- }
+}
+
+
 ```
 ### LCD Interfacing 4 bit mode
 ```C
