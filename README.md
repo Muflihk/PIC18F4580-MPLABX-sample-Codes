@@ -90,9 +90,9 @@ void main (void)
  void main() {
    
     TRISBbits.TRISB2= 0; // RB2 as an output (LED)
-    TRISCbits.TRISC0 = 1; // RB0 is an input  (Switch)
+    TRISCbits.TRISC0 = 1; // RC0 is an input  (Switch)
 
-    // Initialize RB7 (LED) as OFF
+    // Initialize RB2 (LED) as OFF
     LATBbits.LB2 = 0;
 
     while (1)
@@ -109,7 +109,115 @@ void main (void)
         }
     }
 }
+```
+### Seven segment counter
+
+```C 
+ #include <xc.h>
+
+#pragma config OSC=HS
+#pragma config WDT=OFF
+#pragma config PWRT=OFF
+#pragma config BOREN=OFF
+#pragma config LVP=OFF
+#pragma config CPD=OFF
+
+#define _XTAL_FREQ 20000000
+
  
+ // Seven Sgment pins connected to RB0 -RB7 (Segments a-g)
+
+void main()
+{
+     
+    const unsigned char SevenDigits[10] =
+    {
+        0b00111111, // 0
+        0b00000110, // 1
+        0b01011011, // 2
+        0b01001111, // 3
+        0b01100110, // 4
+        0b01101101, // 5
+        0b01111101, // 6
+        0b00000111, // 7
+        0b01111111, // 8
+        0b01101111  // 9
+    };
+    TRISB = 0; // RB7 is input for the button, others are outputs
+    char count = 0;
+    
+    while (1) {
+       
+            __delay_ms(1000); //  delay
+
+            count++; // Increment the count
+            if (count > 9)  //if greater than 9, reset to zero
+            {
+                count = 0; 
+            }
+       
+           PORTB = SevenDigits[count]; // Select digit
+    }
+}
+
+
+```
+### Seven segment counter single switch (Up Counter)
+```C
+
+#include <xc.h>
+
+#pragma config OSC=HS
+#pragma config WDT=OFF
+#pragma config PWRT=OFF
+#pragma config BOREN=OFF
+#pragma config LVP=OFF
+#pragma config CPD=OFF
+
+#define _XTAL_FREQ 20000000
+
+ 
+ // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
+ // switch connected to RC0
+void main()
+{
+     
+    const unsigned char SevenDigits[10] =
+    {
+        0b00111111, // 0
+        0b00000110, // 1
+        0b01011011, // 2
+        0b01001111, // 3
+        0b01100110, // 4
+        0b01101101, // 5
+        0b01111101, // 6
+        0b00000111, // 7
+        0b01111111, // 8
+        0b01101111  // 9
+    };
+    TRISB = 0; // RB7 is input for the button, others are outputs
+    TRISCbits.RC0=1; // Switch input
+    char count = 0;
+    
+    while (1) 
+    {
+       
+           if (PORTCbits.RC0==0) 
+           {
+            __delay_ms(100); // Debounce delay
+              while (PORTCbits.RC0==0); // Wait for button release
+        
+            count++; // Increment the count
+            if (count > 9)  //if grater than 9, reset to zero
+            {
+                count = 0; 
+            }
+            
+           }
+       
+           PORTB = SevenDigits[count];
+    }
+}
  
 
 ```
