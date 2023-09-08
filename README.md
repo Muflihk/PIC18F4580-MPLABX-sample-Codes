@@ -224,8 +224,6 @@ void main()
 ### Seven segment up and down counter (two switches)
 ```C
 
-
-
 #include <xc.h>
 
 #pragma config OSC=HS
@@ -299,6 +297,99 @@ void main()
  
  
  }
-``` 
+```
+### LCD Interfacing 4 bit mode
+```C
+
+#include <xc.h>
+
+#pragma config OSC=HS
+#pragma config WDT=OFF
+#pragma config PWRT=OFF
+#pragma config BOREN=OFF
+#pragma config LVP=OFF
+#pragma config CPD=OFF
+
+#define _XTAL_FREQ 20000000
+
+  
+#define RS PORTCbits.RC3
+#define EN PORTCbits.RC2
+#define LCD_PORT LATD   // LCD D4 -D7 PORTD 4 BI TMODE
+
+//-----Function declaration
+void LCD_Init();
+void LCD_Command(unsigned char);
+void LCD_Out(char );
+void LCD_String(const char*);
+void LCD_Clear();
+
+
+void main() 
+{
+    TRISD=0;
+    TRISC=0;
+    LCD_Init();
+    LCD_String("Hello, World!");
+
+    while (1) 
+    {
+        
+    }
+}
+ 
+ void LCD_Init() 
+{
+  
+    LCD_Command(0x02);
+    __delay_ms(10);
+    LCD_Command(0x28);
+    __delay_ms(10);
+    LCD_Command(0x0E);
+    __delay_ms(10);
+    LCD_Command(0x01);
+    __delay_ms(2);
+    LCD_Command(0x06);
+}
+ void LCD_Clear()
+{
+    LCD_Command(0x01);
+    __delay_ms(2);
+}
+
+void LCD_Command(unsigned char command) 
+{
+    RS = 0;
+    LCD_PORT = (command >> 4) & 0x0F; // Send higher nibble 
+    EN = 1;
+    EN = 0;
+    __delay_us(1);
+    LCD_PORT = command & 0x0F; // Send lower nibble 
+    EN = 1;
+    EN = 0;
+    __delay_us(100);
+}
+
+void LCD_Out(char data)
+{
+    RS = 1;
+    LCD_PORT = (data >> 4) & 0x0F; // Send higher nibble
+    EN = 1;
+    EN = 0;
+    __delay_us(1);
+    LCD_PORT = data & 0x0F; // Send lower nibble 
+    EN = 1;
+    EN = 0;
+    __delay_us(100);
+}
+
+void LCD_String(const char* data) // Send string
+{
+    while (*data != '\0') 
+    {
+        LCD_Out(*data);
+        data++;
+    }
+}
 
 ```
