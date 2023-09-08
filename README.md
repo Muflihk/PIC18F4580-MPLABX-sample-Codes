@@ -124,13 +124,8 @@ void main (void)
 
 #define _XTAL_FREQ 20000000
 
- 
- // Seven Sgment pins connected to RB0 -RB7 (Segments a-g)
-
-void main()
-{
-     
-    const unsigned char SevenDigits[10] =
+  // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
+  unsigned char SelectDigits[10] =
     {
         0b00111111, // 0
         0b00000110, // 1
@@ -143,7 +138,12 @@ void main()
         0b01111111, // 8
         0b01101111  // 9
     };
-    TRISB = 0; // RB7 is input for the button, others are outputs
+
+void main()
+{
+     
+   
+    TRISB = 0; // PORTB output
     char count = 0;
     
     while (1) {
@@ -156,7 +156,7 @@ void main()
                 count = 0; 
             }
        
-           PORTB = SevenDigits[count]; // Select digit
+           PORTB = SelectDigits[count]; // Select digit
     }
 }
 
@@ -178,11 +178,7 @@ void main()
 
  
  // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
- // switch connected to RC0
-void main()
-{
-     
-    const unsigned char SevenDigits[10] =
+  unsigned char SelectDigits[10] =
     {
         0b00111111, // 0
         0b00000110, // 1
@@ -195,11 +191,17 @@ void main()
         0b01111111, // 8
         0b01101111  // 9
     };
-    TRISB = 0; // RB7 is input for the button, others are outputs
+
+void main()
+{
+     
+   
+    TRISB = 0; // PORTB output
     TRISCbits.RC0=1; // Switch input
+    
     char count = 0;
     
-    while (1) 
+   while (1) 
     {
        
            if (PORTCbits.RC0==0) 
@@ -208,16 +210,18 @@ void main()
               while (PORTCbits.RC0==0); // Wait for button release
         
             count++; // Increment the count
-            if (count > 9)  //if grater than 9, reset to zero
+            if (count > 9)  //if greater than 9, reset to zero
             {
                 count = 0; 
             }
             
            }
        
-           PORTB = SevenDigits[count];
+           PORTB = SelectDigits[count];
     }
 }
+
+
  
 
 ```
