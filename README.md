@@ -398,7 +398,7 @@ void LCD_String(const char* data) // Send string
 }
 
 ```
-### LCD Interfacing 4 bit mode
+### Serial data send (UART)
 ```C
  #include <xc.h>
 
