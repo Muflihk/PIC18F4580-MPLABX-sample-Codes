@@ -221,3 +221,84 @@ void main()
  
 
 ```
+### Seven segment up and down counter (two switches)
+```C
+
+
+
+#include <xc.h>
+
+#pragma config OSC=HS
+#pragma config WDT=OFF
+#pragma config PWRT=OFF
+#pragma config BOREN=OFF
+#pragma config LVP=OFF
+#pragma config CPD=OFF
+
+#define _XTAL_FREQ 20000000
+
+ 
+ // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
+ // switch1 connected to RC0
+ //  switch2 connected to RC1
+void main()
+{
+     
+    const  unsigned char SevenDigits[10] =
+    {
+        0b00111111, // 0
+        0b00000110, // 1
+        0b01011011, // 2
+        0b01001111, // 3
+        0b01100110, // 4
+        0b01101101, // 5
+        0b01111101, // 6
+        0b00000111, // 7
+        0b01111111, // 8
+        0b01101111  // 9
+    };
+    TRISB = 0; // RB7 is input for the button, others are outputs
+    TRISCbits.RC0=1;  // Switch up input
+     TRISCbits.RC1=1; // Switch down input
+    char count = 0;
+    
+    while (1) 
+    {
+       
+           if (PORTCbits.RC0==0) // if button1 is pressed
+           {
+            __delay_ms(100); // Debounce delay
+              while (PORTCbits.RC0==0); // Wait for button1 release
+        
+            count++; // Increment the count
+            if (count > 9)  //if grater than 9, reset to zero
+            {
+                count = 0; 
+            }
+            
+           }
+           
+            if (PORTCbits.RC1==0) // if button2 is pressed
+           {
+            __delay_ms(100); // Debounce delay
+              while (PORTCbits.RC1==0); // Wait for button2 release
+        
+              
+            if (count < 0)  //if less than 0, set to 9
+             {
+                count=9; 
+             }
+              count--; // decrement count
+            
+           }
+       
+            LATB = SevenDigits[count];
+           
+    }
+ 
+ 
+ 
+ }
+ 
+
+```
