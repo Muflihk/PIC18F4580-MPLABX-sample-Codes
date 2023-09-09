@@ -144,7 +144,7 @@ void main()
      
    
     TRISB = 0; // PORTB output
-    char count = 0;
+    int count = 0;
     
     while (1) {
        
@@ -199,7 +199,7 @@ void main()
     TRISB = 0; // PORTB output
     TRISCbits.RC0=1; // Switch input
     
-    char count = 0;
+    int count = 0;
     
    while (1) 
     {
@@ -264,7 +264,7 @@ void main()
     TRISCbits.RC0=1;  // Switch up input
     TRISCbits.RC1=1; // Switch down input
     
-    char count = 0;
+   int count = 0;
     
    while (1) 
     {
