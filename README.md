@@ -681,3 +681,52 @@ void ADC_Init() {
 
 
 ```
+### DC Motor direction control
+```C
+#include <xc.h>
+
+#pragma config OSC=HS
+
+#pragma config WDT=OFF
+
+#pragma config PWRT=OFF
+
+#pragma config BOREN=OFF
+
+#pragma config LVP=OFF
+
+#pragma config CPD=OFF
+
+
+#define _XTAL_FREQ  20000000
+void main(void) {
+    TRISBbits.RB6=0; // Motor output1
+    TRISBbits.RB7=0; // Motor output2
+    TRISBbits.RB2=1; // SW1
+    TRISBbits.RB3=1; // SW2
+
+   while(1)
+   {
+       
+    if(PORTBbits.RB2==0)
+    {
+      PORTBbits.RB6=1;
+      PORTBbits.RB7=0;
+      __delay_ms(1000);
+    }
+    else if(PORTBbits.RB3==0)
+     {
+      PORTBbits.RB6=0;
+      PORTBbits.RB7=1;
+      __delay_ms(1000);
+     }
+    else
+     {
+       PORTBbits.RB6=0;
+       PORTBbits.RB7=0;
+      __delay_ms(1000);  
+        
+     }
+}
+}
+```
