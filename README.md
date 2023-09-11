@@ -113,6 +113,7 @@ void main (void)
 ### Seven segment counter
 
 ```C 
+
  #include <xc.h>
 
 #pragma config OSC=HS
@@ -165,6 +166,7 @@ void main()
 ### Seven segment counter single switch (Up Counter)
 ```C
 
+
 #include <xc.h>
 
 #pragma config OSC=HS
@@ -177,7 +179,7 @@ void main()
 #define _XTAL_FREQ 20000000
 
  
- // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
+ // Seven Segment pins connected to RC0 -RC7 (Segments a-g)
   unsigned char SelectDigits[10] =
     {
         0b00111111, // 0
@@ -196,18 +198,18 @@ void main()
 {
      
    
-    TRISB = 0; // PORTB output
-    TRISCbits.RC0=1; // Switch input
+    TRISC = 0; // PORTB output
+    TRISBbits.RB6=1; // Switch input
     
     int count = 0;
     
    while (1) 
     {
        
-           if (PORTCbits.RC0==0) // if button pressed
+           if (PORTBbits.RB6==0) // if button pressed
            {
             __delay_ms(100); // Debounce delay
-              while (PORTCbits.RC0==0); // Wait for button release
+              while (PORTBbits.RB6==0); // Wait for button release
         
             count++; // Increment the count
             if (count > 9)  //if greater than 9, reset to zero
@@ -217,9 +219,12 @@ void main()
             
            }
        
-           PORTB = SelectDigits[count];
+           PORTC = SelectDigits[count];
     }
 }
+
+
+ 
 
 
  
