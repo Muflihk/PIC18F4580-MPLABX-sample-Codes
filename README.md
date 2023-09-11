@@ -240,7 +240,7 @@ void main()
 #define _XTAL_FREQ 20000000
 
  
- // Seven Segment pins connected to RB0 -RB7 (Segments a-g)
+ // Seven Segment pins connected to RC0 -RC7 (Segments a-g)
   unsigned char SelectDigits[10] =
     {
         0b00111111, // 0
@@ -259,48 +259,45 @@ void main()
 {
      
    
-    TRISB = 0; // PORTB output
-   
-    TRISCbits.RC0=1;  // Switch up input
-    TRISCbits.RC1=1; // Switch down input
+    TRISC = 0; // PORTC output
+    TRISB=0XFF; // Switch input
     
-   int count = 0;
+    int count = 0;
     
    while (1) 
     {
        
-           if (PORTCbits.RC0==0) // if button1 is pressed
+           if (PORTBbits.RB6==0) // if button pressed
            {
+               
             __delay_ms(100); // Debounce delay
-              while (PORTCbits.RC0==0); // Wait for button1 release
+              while (PORTBbits.RB6==0); // Wait for button release
         
             count++; // Increment the count
-            if (count > 9)  //if grater than 9, reset to zero
+            if (count > 9)  //if greater than 9, reset to zero
             {
                 count = 0; 
             }
             
            }
            
-            if (PORTCbits.RC1==0) // if button2 is pressed
+            if (PORTBbits.RB7==0) // if button pressed
            {
+               
             __delay_ms(100); // Debounce delay
-              while (PORTCbits.RC1==0); // Wait for button2 release
+              while (PORTBbits.RB7==0); // Wait for button release
         
-              
-            if (count < 0)  //if less than 0, set to 9
-             {
-                count=9; 
-             }
-              count--; // decrement count
+            count--; // Increment the count
+            if (count < 0)  //if greater than 9, reset to zero
+            {
+                count = 9; 
+            }
             
            }
        
-       
-           LATB = SelectDigits[count];
+           PORTC = SelectDigits[count];
     }
 }
-
 
 ```
 ### LCD Interfacing 4 bit mode
